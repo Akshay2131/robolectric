@@ -381,18 +381,21 @@ public class ShadowWrangler implements ClassHandler {
 
   private Method findShadowMethodDeclaredOnClass(
       Class<?> shadowClass, String methodName, Class<?>[] paramClasses) {
-    try {
-      Method method = shadowClass.getDeclaredMethod(methodName, paramClasses);
+  //  try {
+     // Method method = shadowClass.getDeclaredMethod(methodName, paramClasses);
 
       // todo: allow per-version overloading
-      // if (method == null) {
-      //   String methodPrefix = name + "$$";
-      //   for (Method candidateMethod : shadowClass.getDeclaredMethods()) {
-      //     if (candidateMethod.getName().startsWith(methodPrefix)) {
-      //
-      //     }
-      //   }
-      // }
+     //  if (method == null) {
+         String methodPrefix = methodName + "$$";
+         for (Method candidateMethod : shadowClass.getDeclaredMethods()) {
+           if (candidateMethod.getName().startsWith(methodPrefix)) {
+             if (isValidShadowMethod(candidateMethod)) {
+               candidateMethod.setAccessible(true);
+               return candidateMethod;
+             }
+           }
+         }
+     /**  }
 
       if (isValidShadowMethod(method)) {
         method.setAccessible(true);
@@ -403,7 +406,8 @@ public class ShadowWrangler implements ClassHandler {
 
     } catch (NoSuchMethodException e) {
       return null;
-    }
+    } */
+    return null;
   }
 
   private boolean isValidShadowMethod(Method method) {

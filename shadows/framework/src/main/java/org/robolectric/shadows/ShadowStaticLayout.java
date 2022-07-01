@@ -7,6 +7,8 @@ import static android.os.Build.VERSION_CODES.O_MR1;
 import static android.os.Build.VERSION_CODES.P;
 
 import android.text.StaticLayout;
+
+import org.robolectric.annotation.ClassName;
 import org.robolectric.annotation.HiddenApi;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
@@ -30,24 +32,24 @@ public class ShadowStaticLayout {
   @Implementation(minSdk = P, maxSdk = P)
   @HiddenApi
   protected static int nComputeLineBreaks(
-      Object nativePtr,
-      Object text,
-      Object measuredTextPtr,
-      Object length,
-      Object firstWidth,
-      Object firstWidthLineCount,
-      Object restWidth,
-      Object variableTabStops,
-      Object defaultTabStop,
-      Object indentsOffset,
-      Object recycle,
-      Object recycleLength,
-      Object recycleBreaks,
-      Object recycleWidths,
-      Object recycleAscents,
-      Object recycleDescents,
-      Object recycleFlags,
-      Object charWidths) {
+          long nativePtr,
+          char[] text,
+          long measuredTextPtr,
+          int length,
+          float firstWidth,
+          int firstWidthLineCount,
+          float restWidth,
+          int[] variableTabStops,
+          int defaultTabStop,
+          int indentsOffset,
+          @ClassName("android.text.StaticLayout$LineBreaks") Object recycle,
+          int recycleLength,
+          int[] recycleBreaks,
+          float[] recycleWidths,
+          float[] recycleAscents,
+          float[] recycleDescents,
+          int[] recycleFlags,
+          float[] charWidths) {
     return 1;
   }
 }

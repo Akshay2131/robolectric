@@ -34,6 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.annotation.ClassName;
 import org.robolectric.annotation.HiddenApi;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
@@ -53,7 +54,8 @@ public class ShadowWifiManager {
   private boolean wasSaved = false;
   private WifiInfo wifiInfo;
   private List<ScanResult> scanResults;
-  private final Map<Integer, WifiConfiguration> networkIdToConfiguredNetworks = new LinkedHashMap<>();
+  private final Map<Integer, WifiConfiguration> networkIdToConfiguredNetworks =
+      new LinkedHashMap<>();
   private Pair<Integer, Boolean> lastEnabledNetwork;
   private final Set<Integer> enabledNetworks = new HashSet<>();
   private DhcpInfo dhcpInfo;
@@ -122,9 +124,7 @@ public class ShadowWifiManager {
     this.isStaApConcurrencySupported = isStaApConcurrencySupported;
   }
 
-  /**
-   * Sets the connection info as the provided {@link WifiInfo}.
-   */
+  /** Sets the connection info as the provided {@link WifiInfo}. */
   public void setConnectionInfo(WifiInfo wifiInfo) {
     this.wifiInfo = wifiInfo;
   }
@@ -266,9 +266,10 @@ public class ShadowWifiManager {
   protected void connect(WifiConfiguration wifiConfiguration, WifiManager.ActionListener listener) {
     WifiInfo wifiInfo = getConnectionInfo();
 
-    String ssid = isQuoted(wifiConfiguration.SSID)
-        ? stripQuotes(wifiConfiguration.SSID)
-        : wifiConfiguration.SSID;
+    String ssid =
+        isQuoted(wifiConfiguration.SSID)
+            ? stripQuotes(wifiConfiguration.SSID)
+            : wifiConfiguration.SSID;
 
     ShadowWifiInfo shadowWifiInfo = Shadow.extract(wifiInfo);
     shadowWifiInfo.setSSID(ssid);
@@ -413,11 +414,10 @@ public class ShadowWifiManager {
 
   @Implementation(minSdk = Q)
   @HiddenApi
-  protected void addOnWifiUsabilityStatsListener(Object executorObject, Object listenerObject) {
-    Executor executor = (Executor) executorObject;
+  protected void addOnWifiUsabilityStatsListener(Executor executorObject, @ClassName("android.net.wifi.WifiManager$OnWifiUsabilityStatsListener") Object listenerObject) {
     WifiManager.OnWifiUsabilityStatsListener listener =
         (WifiManager.OnWifiUsabilityStatsListener) listenerObject;
-    wifiUsabilityStatsListeners.put(listener, executor);
+    wifiUsabilityStatsListeners.put(listener, executorObject);
   }
 
   @Implementation(minSdk = Q)
